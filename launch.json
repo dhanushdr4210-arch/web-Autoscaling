@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: preprocess azure",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}\\preprocess.py",
+            "args": ["invocations_per_function_md.anon.d01.csv", "azure_d01"],
+            "console": "integratedTerminal"
+        }
+    ]
+}

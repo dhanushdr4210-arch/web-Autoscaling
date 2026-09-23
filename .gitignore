@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Large datasets
+*.csv
+*.gz
+*.parquet
+*.tar.xz
+*.zip
+
+# Dataset folders
+datacentertracesdatasets-cli-main/
+worldcup98-dataset-master/
+WorldCup98-master/
+
+# VS Code
+.vscode/
+
+# Environment
+.env
