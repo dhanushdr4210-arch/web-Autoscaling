@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Unique layer for cold-cache experiment.
+# This makes cold-v2 different from the existing v1 image.
+RUN dd if=/dev/urandom of=/cold-cache-unique.bin bs=1M count=50
+
+COPY main.py .
+
+ENV STARTUP_DELAY_MS=0
+ENV POD_NAME=local
+ENV NODE_NAME=local
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

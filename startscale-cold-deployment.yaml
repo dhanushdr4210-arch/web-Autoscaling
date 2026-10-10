@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: startscale-cold
+  namespace: default
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: startscale-cold
+  template:
+    metadata:
+      labels:
+        app: startscale-cold
+    spec:
+      containers:
+        - name: startscale-cold
+          image: localhost:5000/startscale-target:cold-v2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: STARTUP_DELAY_MS
+              value: "3000"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            periodSeconds: 1
+            failureThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: startscale-target
+  labels:
+    app: startscale-target
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: startscale-target
+  template:
+    metadata:
+      labels:
+        app: startscale-target
+    spec:
+      containers:
+        - name: startscale-target
+          image: localhost:5000/startscale-target:v1
+          imagePullPolicy: IfNotPresent   # use the image already loaded into kind, don't try to pull from a registry
+          ports:
+            - containerPort: 8000
+          env:
+            - name: STARTUP_DELAY_MS
+              value: "3000"   # simulated cold-start delay in ms -- tune per experiment
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name   # Downward API: inject the pod's own name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName   # Downward API: inject which node it landed on
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 0
+            periodSeconds: 1        # check every 1s so readiness latency is measured precisely
+            failureThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: startscale-target
+spec:
+  selector:
+    app: startscale-target
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: ClusterIP
