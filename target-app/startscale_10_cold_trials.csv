@@ -1,0 +1,11 @@
+trial,request_time_utc,ready_time_utc,request_to_ready_ms,pod_name,node_name,cache_state,p50_prediction_ms,p90_prediction_ms,status
+1,2026-10-06T11:10:36.505888+00:00,2026-10-06T11:10:41.930197+00:00,5424.31,startscale-event-5f57578d7d-gcvbc,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+2,2026-10-06T11:10:48.525472+00:00,2026-10-06T11:10:53.967416+00:00,5441.94,startscale-event-5f57578d7d-kd8v8,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+3,2026-10-06T11:11:00.543005+00:00,2026-10-06T11:11:06.003184+00:00,5460.18,startscale-event-5f57578d7d-kkpnz,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+4,2026-10-06T11:11:12.579341+00:00,2026-10-06T11:11:18.041865+00:00,5462.52,startscale-event-5f57578d7d-jn576,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+5,2026-10-06T11:11:24.617518+00:00,2026-10-06T11:11:30.077126+00:00,5459.61,startscale-event-5f57578d7d-9v8bf,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+6,2026-10-06T11:11:36.630963+00:00,2026-10-06T11:11:42.128034+00:00,5497.07,startscale-event-5f57578d7d-7rz9z,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+7,2026-10-06T11:11:48.687225+00:00,2026-10-06T11:11:54.145594+00:00,5458.37,startscale-event-5f57578d7d-wvxqp,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+8,2026-10-06T11:12:00.722972+00:00,2026-10-06T11:12:06.173043+00:00,5450.07,startscale-event-5f57578d7d-ttxr4,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+9,2026-10-06T11:12:12.749362+00:00,2026-10-06T11:12:18.211519+00:00,5462.16,startscale-event-5f57578d7d-gppzs,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
+10,2026-10-06T11:12:24.800448+00:00,2026-10-06T11:12:30.240086+00:00,5439.64,startscale-event-5f57578d7d-8cbpt,autoscaling-worker3,cold,6731.83,7615.14,SUCCESS
