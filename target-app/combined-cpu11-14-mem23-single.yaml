@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: startscale-calibration-cpu11-14-mem23
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: startscale-calibration-cpu11-14-mem23
+  template:
+    metadata:
+      labels:
+        app: startscale-calibration-cpu11-14-mem23
+    spec:
+      nodeName: autoscaling-worker
+      containers:
+      - name: pressure
+        image: python:3.12-slim
+        command:
+        - python
+        - -c
+        - |
+          import multiprocessing
+          import time
+
+          def cpu_burn():
+              x = 0
+              while True:
+                  x = (x * 3 + 1) % 1000003
+
+          memory = bytearray(1520 * 1024 * 1024)
+
+          for i in range(0, len(memory), 4096):
+              memory[i] = 1
+
+          workers = []
+          for _ in range(2):
+              p = multiprocessing.Process(target=cpu_burn)
+              p.start()
+              workers.append(p)
+
+          while True:
+              time.sleep(60)
+        resources:
+          requests:
+            cpu: "2"
+            memory: "1600Mi"
+          limits:
+            cpu: "2"
+            memory: "1700Mi"

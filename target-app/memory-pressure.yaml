@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: startscale-memory-pressure
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: startscale-memory-pressure
+  template:
+    metadata:
+      labels:
+        app: startscale-memory-pressure
+    spec:
+      containers:
+        - name: memory-hold
+          image: localhost:5000/startscale-target:v1
+          command:
+            - python
+            - -c
+            - |
+              import time
+
+              size = int(1.0 * 1024 * 1024 * 1024)
+              data = bytearray(size)
+
+              for i in range(0, size, 4096):
+                  data[i] = 1
+
+              print("Stable memory pressure active")
+              while True:
+                  time.sleep(60)
+
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "1Gi"
+            limits:
+              cpu: "100m"
+              memory: "1500Mi"

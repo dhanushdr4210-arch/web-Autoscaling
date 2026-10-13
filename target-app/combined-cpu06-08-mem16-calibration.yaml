@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: startscale-combined-cpu06-08-mem16
+spec:
+  selector:
+    matchLabels:
+      app: startscale-combined-cpu06-08-mem16
+  template:
+    metadata:
+      labels:
+        app: startscale-combined-cpu06-08-mem16
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+        - name: pressure
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - python
+            - -c
+            - |
+              import threading
+              import time
+
+              # ------------------------------------------------
+              # Memory pressure
+              # Approximately 1150 MiB
+              # ------------------------------------------------
+              memory_block = bytearray(
+                  1150 * 1024 * 1024
+              )
+
+              # ------------------------------------------------
+              # CPU pressure
+              # One Python CPU-burning thread.
+              # On the 16-vCPU kind worker this should produce
+              # roughly a single-core share (~6% of node CPU).
+              # ------------------------------------------------
+              def burn_cpu():
+                  while True:
+                      total = 0
+                      for i in range(10000):
+                          total += i * i
+
+              cpu_thread = threading.Thread(
+                  target=burn_cpu,
+                  daemon=True
+              )
+
+              cpu_thread.start()
+
+              # Keep the pressure pod alive.
+              time.sleep(10**9)
+
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1150Mi"
+            limits:
+              cpu: "1"
+              memory: "1600Mi"

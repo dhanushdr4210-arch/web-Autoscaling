@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: DaemonSet
+
+metadata:
+  name: startscale-combined-cpu11-14-mem23
+  namespace: default
+
+spec:
+  selector:
+    matchLabels:
+      app: startscale-combined-cpu11-14-mem23
+
+  template:
+    metadata:
+      labels:
+        app: startscale-combined-cpu11-14-mem23
+
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+        - name: combined-pressure
+
+          image: localhost:5000/startscale-target:v1
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - python
+            - -c
+            - |
+              import multiprocessing
+              import time
+
+              # ------------------------------------------------
+              # MEMORY PRESSURE
+              # Reuse the previously validated MEM23 workload.
+              # Approximately 1.5 GiB resident memory.
+              # ------------------------------------------------
+
+              size = int(
+                  1.5 * 1024 * 1024 * 1024
+              )
+
+              memory_block = bytearray(
+                  size
+              )
+
+              # Touch each page so the allocation is resident.
+              for i in range(
+                  0,
+                  size,
+                  4096
+              ):
+                  memory_block[i] = 1
+
+              # ------------------------------------------------
+              # CPU PRESSURE
+              # Two independent processes, approximately
+              # one CPU core each.
+              # Target: approximately 11-14% on 16-vCPU workers.
+              # ------------------------------------------------
+
+              def burn_cpu():
+                  while True:
+                      total = 0
+
+                      for i in range(10000):
+                          total += i * i
+
+              cpu_processes = []
+
+              for _ in range(2):
+                  p = multiprocessing.Process(
+                      target=burn_cpu
+                  )
+                  p.start()
+                  cpu_processes.append(p)
+
+              print(
+                  "CPU 11-14% + MEM 22-23% "
+                  "calibration pressure active"
+              )
+
+              # Keep the pressure pod alive.
+              while True:
+                  time.sleep(60)
+
+          resources:
+            requests:
+              cpu: "2"
+              memory: "2Gi"
+
+            limits:
+              cpu: "2"
+              memory: "2Gi"

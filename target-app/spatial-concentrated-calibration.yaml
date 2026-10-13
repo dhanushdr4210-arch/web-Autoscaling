@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spatial-concentrated-calibration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spatial-concentrated-calibration
+  template:
+    metadata:
+      labels:
+        app: spatial-concentrated-calibration
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: autoscaling-worker
+      containers:
+      - name: load
+        image: python:3.12-slim
+        command:
+        - python
+        - -c
+        - |
+          import multiprocessing
+          import time
+
+          def burn():
+              x = 0
+              while True:
+                  x = (x + 1) % 1000000
+
+          workers = []
+
+          for _ in range(1):
+              p = multiprocessing.Process(target=burn)
+              p.start()
+              workers.append(p)
+
+          while True:
+              time.sleep(60)
+
+        resources:
+          requests:
+            cpu: "1"
+            memory: 300Mi
+          limits:
+            cpu: "1"
+            memory: 300Mi

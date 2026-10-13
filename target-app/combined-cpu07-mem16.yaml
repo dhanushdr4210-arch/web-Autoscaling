@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: startscale-combined-cpu07-mem16
+spec:
+  selector:
+    matchLabels:
+      app: startscale-combined-cpu07-mem16
+  template:
+    metadata:
+      labels:
+        app: startscale-combined-cpu07-mem16
+    spec:
+      containers:
+        - name: combined-pressure
+          image: localhost:5000/startscale-target:v1
+          command:
+            - python
+            - -c
+            - |
+              import multiprocessing as mp
+              import time
+
+              size = int(1.0 * 1024 * 1024 * 1024)
+              data = bytearray(size)
+
+              for i in range(0, size, 4096):
+                  data[i] = 1
+
+              def burn():
+                  while True:
+                      pass
+
+              workers = []
+              for _ in range(2):
+                  p = mp.Process(target=burn)
+                  p.start()
+                  workers.append(p)
+
+              print("Combined CPU13 + MEM16 pressure active")
+
+              while True:
+                  time.sleep(60)
+
+          resources:
+            requests:
+              cpu: "2"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "1500Mi"

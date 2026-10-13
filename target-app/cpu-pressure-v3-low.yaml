@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: startscale-cpu-v3-low
+spec:
+  selector:
+    matchLabels:
+      app: startscale-cpu-v3-low
+  template:
+    metadata:
+      labels:
+        app: startscale-cpu-v3-low
+    spec:
+      containers:
+        - name: cpu-burn
+          image: localhost:5000/startscale-target:v1
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - -c
+            - |
+              x = 0
+              while True:
+                  x = (x + 1) % 1000000
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "32Mi"
+            limits:
+              cpu: "1000m"
+              memory: "64Mi"

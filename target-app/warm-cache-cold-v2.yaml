@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: warm-cache-cold-v2
+spec:
+  selector:
+    matchLabels:
+      app: warm-cache-cold-v2
+  template:
+    metadata:
+      labels:
+        app: warm-cache-cold-v2
+    spec:
+      containers:
+        - name: cache-loader
+          image: localhost:5000/startscale-target:cold-v2
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - -c
+            - |
+              import time
+              print("cold-v2 cached")
+              time.sleep(60)

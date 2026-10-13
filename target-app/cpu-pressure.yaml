@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: startscale-cpu-pressure
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: startscale-cpu-pressure
+  template:
+    metadata:
+      labels:
+        app: startscale-cpu-pressure
+    spec:
+      containers:
+        - name: cpu-burn
+          image: localhost:5000/startscale-target:v1
+          command:
+            - python
+            - -c
+            - |
+              import multiprocessing
+
+              def burn():
+                  x = 0
+                  while True:
+                      x = (x + 1) % 1000000
+
+              processes = []
+              for _ in range(8):
+                  p = multiprocessing.Process(target=burn)
+                  p.start()
+                  processes.append(p)
+
+              for p in processes:
+                  p.join()
+
+          resources:
+            requests:
+              cpu: "8000m"
+              memory: "128Mi"
+            limits:
+              cpu: "8000m"
+              memory: "256Mi"
