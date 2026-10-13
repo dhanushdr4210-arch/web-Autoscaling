@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: startscale-cache-event
+
+spec:
+  replicas: 0
+
+  selector:
+    matchLabels:
+      app: startscale-cache-event
+
+  template:
+    metadata:
+      labels:
+        app: startscale-cache-event
+
+    spec:
+      containers:
+        - name: startscale-target
+
+          image: localhost:5000/startscale-target:cold-v2
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: STARTUP_DELAY_MS
+              value: "3000"
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+
+            initialDelaySeconds: 0
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 120
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3

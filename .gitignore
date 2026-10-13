@@ -20,3 +20,23 @@ WorldCup98-master/
 
 # Environment
 .env
+# StartScale selected research summaries
+!target-app/aggregate_vs_spatial_results.csv
+!target-app/clean_aggregate_vs_spatial_results.csv
+!target-app/conformal_quantile_results.csv
+!target-app/quantile_readiness_results.csv
+!target-app/spatial_feature_level_ablation_results.csv
+!target-app/v3_model_comparison.csv
+!target-app/v3_model_v2_comparison.csv
+!target-app/v3_model_v2_ablation_results.csv
+!target-app/v3_gradient_boosting_feature_importance.csv
+!target-app/v3_stratified_5fold_results.csv
+!target-app/v3_condition_coverage_summary.csv
+!target-app/v3_cpu_memory_coverage.csv
+!target-app/startup_delay_condition_stats.csv
+!target-app/startup_delay_condition_percentiles.csv
+!target-app/tail_condition_statistics.csv
+!target-app/tail_cache_statistics.csv
+!target-app/tail_spatial_statistics.csv
+!target-app/startscale_grouped_validation_results.csv
+!target-app/startscale_grouped_validation_results_v2.csv
